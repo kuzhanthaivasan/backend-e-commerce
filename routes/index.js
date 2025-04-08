@@ -6,7 +6,7 @@ const productRoutes = require('./productRoutes');
 const categoryRoutes = require('./categoryRoutes');
 const customOptionsRoutes = require('./customOptionsRoutes');
 const metalRatesRoutes = require('./metalRatesRoutes');
-const Userroutes = require('./Userroutes');
+const UserRoutes = require('./UserRoutes');
 const orderRoutes = require('./orderRoutes');
 const dashRoutes = require('./dashRoutes');
 const trackorderRoutes = require('./trackorderRoutes');
@@ -31,7 +31,7 @@ router.use('/api', productRoutes);
 router.use('/', categoryRoutes);     // Clean separation
 router.use('/customOptions', customOptionsRoutes);
 router.use('/', metalRatesRoutes);
-router.use('/', Userroutes); 
+router.use('/', UserRoutes); 
 router.use('/', orderRoutes); 
 router.use('/', dashRoutes);             // Clear user endpoints
 router.use('/', trackorderRoutes); 
