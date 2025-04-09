@@ -466,17 +466,17 @@ const getProductsByCategory = (peopleCategory, productCategory, defaultDescripti
 // KIDS ROUTES
 // Basic routes for each product category
 router.get('/products/kids/rings', getProductsByCategory('Kids', 'Ring', 'Adorable ring for kids'));
-router.get('/products/kids/pendants', getProductsByCategory('Kids', 'Pendant', 'Adorable pendant for kids'));
+router.get('/products/kids/pendants', getProductsByCategory('Kids', 'Pendants', 'Adorable pendant for kids'));
 router.get('/products/kids/bracelets', getProductsByCategory('Kids', 'Bracelets', 'Adorable bracelet for kids'));
 
 // WOMEN ROUTES
 router.get('/products/women/rings', getProductsByCategory('Female', 'Ring', 'Elegant ring for women'));
-router.get('/products/women/pendants', getProductsByCategory('Female', 'Pendant', 'Elegant pendant for women'));
+router.get('/products/women/pendants', getProductsByCategory('Female', 'Pendants', 'Elegant pendant for women'));
 router.get('/products/women/bracelets', getProductsByCategory('Female', 'Bracelets', 'Elegant bracelet for women'));
 
 // MEN ROUTES
 router.get('/products/men/rings', getProductsByCategory('Male', 'Ring', 'Sophisticated ring for men'));
-router.get('/products/men/pendants', getProductsByCategory('Male', 'Pendant', 'Sophisticated pendant for men'));
+router.get('/products/men/pendants', getProductsByCategory('Male', 'Pendants', 'Sophisticated pendant for men'));
 router.get('/products/men/bracelets', getProductsByCategory('Male', 'Bracelets', 'Sophisticated bracelet for men'));
 
 // ======================================================
@@ -537,17 +537,17 @@ const createFilteredProductRoute = (endpoint, peopleCategory, productCategory, d
 
 // KIDS - Create frontend integration routes
 createFilteredProductRoute('/kids-rings', 'Kids', 'Ring', 'Magical ring for kids');
-createFilteredProductRoute('/kids-pendants', 'Kids', 'Pendant', 'Magical pendant for kids');
+createFilteredProductRoute('/kids-pendants', 'Kids', 'Pendants', 'Magical pendant for kids');
 createFilteredProductRoute('/kids-bracelets', 'Kids', 'Bracelets', 'Magical bracelet for kids');
 
 // WOMEN - Create frontend integration routes
 createFilteredProductRoute('/women-rings', 'Female', 'Ring', 'Elegant ring for women');
-createFilteredProductRoute('/women-pendants', 'Female', 'Pendant', 'Elegant pendant for women');
+createFilteredProductRoute('/women-pendants', 'Female', 'Pendants', 'Elegant pendant for women');
 createFilteredProductRoute('/women-bracelets', 'Female', 'Bracelets', 'Elegant bracelet for women');
 
 // MEN - Create frontend integration routes
 createFilteredProductRoute('/men-rings', 'Male', 'Ring', 'Sophisticated ring for men');
-createFilteredProductRoute('/men-pendants', 'Male', 'Pendant', 'Sophisticated pendant for men');
+createFilteredProductRoute('/men-pendants', 'Male', 'Pendants', 'Sophisticated pendant for men');
 createFilteredProductRoute('/men-bracelets', 'Male', 'Bracelets', 'Sophisticated bracelet for men');
 
 module.exports = router;
