@@ -3,6 +3,35 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { User } = require('../models');
+const nodemailer = require('nodemailer');
+
+// Configure nodemailer
+let transporter;
+try {
+  transporter = nodemailer.createTransport({
+    service: 'gmail', // or another email service provider
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_APP_PASSWORD // Use app password for Gmail
+    }
+  });
+  
+  console.log('Email config attempted with:', {
+    user: process.env.EMAIL_USER ? 'EMAIL_USER is set' : 'EMAIL_USER is NOT set',
+    pass: process.env.EMAIL_APP_PASSWORD ? 'EMAIL_APP_PASSWORD is set' : 'EMAIL_APP_PASSWORD is NOT set'
+  });
+  
+  // Test the connection
+  transporter.verify(function(error, success) {
+    if (error) {
+      console.error('Email verification error:', error);
+    } else {
+      console.log('Email server is ready to send messages');
+    }
+  });
+} catch (error) {
+  console.error('Email configuration error:', error);
+}
 
 // In-memory storage for verification codes (in production, use a database)
 const verificationCodes = new Map();
@@ -11,7 +40,6 @@ const verificationCodes = new Map();
 router.post('/register', async (req, res) => {
   try {
     const { firstName, lastName, email, password, phoneNumber, verificationCode } = req.body;
-    const transporter = req.app.get('emailTransporter');
     
     // If verification code is not provided, it's the initial registration request
     if (!verificationCode) {
@@ -155,7 +183,6 @@ router.post('/login', async (req, res) => {
 router.post('/reset-password-request', async (req, res) => {
   try {
     const { email } = req.body;
-    const transporter = req.app.get('emailTransporter');
     
     // Find user by email
     const user = await User.findOne({ email });
