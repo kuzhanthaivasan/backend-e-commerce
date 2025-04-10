@@ -200,6 +200,110 @@ router.post('/upload/url', async (req, res) => {
 });
 
 // ====================================================== 
+// SEARCH FUNCTIONALITY - Add this BEFORE any parameterized routes
+// ====================================================== 
+/**
+ * Search products with filtering
+ * GET /api/products/search?q=searchTerm&peopleCategory=Female&productType=Gold&priceRange=1000-2000
+ */
+router.get('/products/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    
+    // Extract filters from query params
+    const filters = {};
+    
+    // Add text search condition if search query exists
+    if (q && q.trim() !== '') {
+      // Use regex for case-insensitive search across multiple fields
+      filters.$or = [
+        { name: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } },
+        { peopleCategory: { $regex: q, $options: 'i' } },
+        { productCategory: { $regex: q, $options: 'i' } }
+      ];
+    }
+    
+    // Add people category filter - directly from req.query
+    if (req.query.peopleCategory && req.query.peopleCategory !== 'all') {
+      filters.peopleCategory = req.query.peopleCategory;
+    }
+    
+    // Add product category filter - directly from req.query
+    if (req.query.productCategory && req.query.productCategory !== 'all') {
+      filters.productCategory = req.query.productCategory;
+    }
+    
+    // Add product type filter (Gold or Silver) - directly from req.query
+    if (req.query.productType && req.query.productType !== 'all') {
+      filters.productType = req.query.productType;
+    }
+    
+    // Add price range filter - directly from req.query
+    if (req.query.priceRange && req.query.priceRange !== 'all') {
+      const [min, max] = req.query.priceRange.split('-').map(Number);
+      if (max) {
+        filters.price = { $gte: min, $lte: max };
+      } else {
+        filters.price = { $gte: min };
+      }
+    }
+    
+    // Add custom option filter - directly from req.query
+    if (req.query.customOption && req.query.customOption !== 'all') {
+      filters.customOption = req.query.customOption;
+    }
+    
+    // Add in-stock filter - directly from req.query
+    if (req.query.inStock === 'true') {
+      filters.inStock = true;
+    }
+    
+    // Add weight/gram filter if needed
+    if (req.query.minGram) {
+      filters.gram = filters.gram || {};
+      filters.gram.$gte = parseInt(req.query.minGram);
+    }
+    
+    if (req.query.maxGram) {
+      filters.gram = filters.gram || {};
+      filters.gram.$lte = parseInt(req.query.maxGram);
+    }
+    
+    console.log('Search filters:', JSON.stringify(filters));
+    
+    // Execute query with pagination
+    const products = await Product.find(filters)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+    
+    // Get total count for pagination
+    const total = await Product.countDocuments(filters);
+    
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      products
+    });
+    
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while searching products',
+      error: error.message
+    });
+  }
+});
+
+// ====================================================== 
 // PRODUCT ENDPOINTS WITH IMAGE SUPPORT
 // ====================================================== 
 // Create a new product with image(s)
@@ -296,6 +400,12 @@ router.post('/products', async (req, res) => {
   router.get('/products/:id', async (req, res) => {
     try {
       const { id } = req.params;
+      
+      // Validate ObjectId format to prevent "search" being treated as an id
+      if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+        return res.status(400).json({ message: 'Invalid product ID format' });
+      }
+      
       const product = await Product.findById(id);
       
       if (!product) {
