@@ -37,7 +37,11 @@ router.get('/track-order/:orderNumber', async (req, res) => {
         customerName: order.customerDetails.name,
         customerEmail: order.customerDetails.email,
         customerNumber:order.customerDetails.phone,
-        customerAddress:order.customerDetails.address
+        customerAddress:order.customerDetails.address,
+        customerCity:order.customerDetails.city,
+        customerState:order.customerDetails.state,
+        customerPincode:order.customerDetails.zipCode,
+        customerCountry:order.customerDetails.country
       };
   
       res.json(orderStatus);
