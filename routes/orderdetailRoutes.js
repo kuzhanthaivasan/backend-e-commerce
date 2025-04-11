@@ -36,7 +36,7 @@ router.post('/upload', (req, res) => {
     res.json({
       success: true,
       fileId: req.file.filename,
-      fileUrl: `http://localhost:5010/api/files/${req.file.filename}`
+      fileUrl: `https://backend-e-commerce-4-clvh.onrender.com/api/files/${req.file.filename}`
     });
   });
 });
