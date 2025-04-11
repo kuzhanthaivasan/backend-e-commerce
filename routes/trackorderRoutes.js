@@ -35,7 +35,9 @@ router.get('/track-order/:orderNumber', async (req, res) => {
           price: product.price
         })),
         customerName: order.customerDetails.name,
-        customerEmail: order.customerDetails.email
+        customerEmail: order.customerDetails.email,
+        customerNumber:order.customerDetails.phone,
+        customerAddress:order.customerDetails.address
       };
   
       res.json(orderStatus);
