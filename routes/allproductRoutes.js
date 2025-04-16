@@ -26,17 +26,23 @@ router.get('/all-products', async (req, res) => {
     // Price range filter
     filterOptions.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };
 
+    // By default, only show products without customization
+    filterOptions.customOption = { $in: ['None', ''] };
+
     // Category filter
     if (category !== 'all') {
       if (category === 'Female' || category === 'Male' || category === 'Kids'|| category === 'couples') {
         filterOptions.peopleCategory = category;
       } else if (category === 'customOption') {
-        filterOptions.customOption = { $ne: 'None' };
+        // If specifically requesting custom products, change the filter to include those with custom options
+        delete filterOptions.customOption; // Remove the default filter
+        filterOptions.customOption = { $nin: ['None', ''] }; // Show only products with customization
       }
     }
 
-    // Customization type filter
+    // Customization type filter - only applies if specifically looking for customized products
     if (customizationType !== 'all') {
+      delete filterOptions.customOption; // Remove the default filter
       filterOptions.customizationType = customizationType.toLowerCase();
     }
 
@@ -174,7 +180,8 @@ router.get('/products/category/:category', async (req, res) => {
       $or: [
         { peopleCategory: category },
         { productCategory: category }
-      ]
+      ],
+      customOption: { $in: ['None', ''] } // Only show non-customized products
     });
 
     // Transform products to ensure images array is included
@@ -205,7 +212,10 @@ router.get('/products/category/:category', async (req, res) => {
 router.get('/products/customization/:type', async (req, res) => {
   try {
     const { type } = req.params;
-    const products = await Product.find({ customizationType: type.toLowerCase() });
+    const products = await Product.find({ 
+      customizationType: type.toLowerCase(),
+      customOption: { $nin: ['None', ''] } // Only show customized products
+    });
 
     // Transform products to ensure images array is included
     const transformedProducts = products.map(product => ({
