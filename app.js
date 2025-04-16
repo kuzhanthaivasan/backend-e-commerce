@@ -137,8 +137,6 @@ const connectDB = async () => {
   for (let i = 0; i < retries; i++) {
     try {
       await mongoose.connect(connectionString, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         serverSelectionTimeoutMS: 10000, // Timeout after 10s instead of default 30s
         socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
       });
