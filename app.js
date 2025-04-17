@@ -89,7 +89,7 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 const connectDB = async (retries = 5, delay = 5000) => {
   for (let i = 0; i < retries; i++) {
     try {
-      await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://quibotechoffical:quibotech@cluster3.lgfjmv1.mongodb.net/Rmj', {
+      await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Rmj-jewellery:Rajamanijewellery35@cluster0.riwu20p.mongodb.net/', {
         useNewUrlParser: true,
         useUnifiedTopology: true
       });
