@@ -77,6 +77,7 @@ router.get('/all-products', async (req, res) => {
 
     // Execute query
     const products = await Product.find(filterOptions)
+       .lean()
       .sort(sortOptions)
       .skip(skip)
       .limit(parseInt(limit));
